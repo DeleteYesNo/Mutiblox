@@ -1,0 +1,64 @@
+<UserControl x:Class="Mutiblox.Views.Pages.SettingsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Foreground="#CDD6F4" Padding="16">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="0,0,16,0">
+            <TextBlock Text="設定" FontSize="24" FontWeight="Bold" Margin="0,0,0,20" />
+
+            <!-- Roblox Detection -->
+            <Border Background="#313244" CornerRadius="8" Padding="16" Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="Roblox 路徑" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,8" />
+                    <TextBlock Text="{Binding RobloxPath}" Foreground="#A6ADC8" FontSize="13"
+                               TextWrapping="Wrap" Margin="0,0,0,8" />
+                    <Button Content="重新偵測" Command="{Binding DetectRobloxCommand}"
+                            Style="{StaticResource SecondaryButton}" HorizontalAlignment="Left" />
+                </StackPanel>
+            </Border>
+
+            <!-- Multi-Instance -->
+            <Border Background="#313244" CornerRadius="8" Padding="16" Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="多開控制" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,8" />
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <TextBlock VerticalAlignment="Center" Margin="0,0,12,0">
+                            <Run Text="狀態: " />
+                            <Run Text="{Binding IsMultiInstanceEnabled, Mode=OneWay}" />
+                        </TextBlock>
+                        <Button Content="切換多開" Command="{Binding ToggleMultiInstanceCommand}"
+                                Style="{StaticResource PrimaryButton}" />
+                    </StackPanel>
+                    <CheckBox Content="啟動時自動啟用多開"
+                              IsChecked="{Binding AutoEnableMultiInstance}"
+                              Foreground="#CDD6F4" FontSize="13" />
+                </StackPanel>
+            </Border>
+
+            <!-- Cookie Keep-Alive -->
+            <Border Background="#313244" CornerRadius="8" Padding="16" Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="Cookie 自動保活" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,8" />
+                    <TextBlock Text="每 6 小時檢查帳號 Cookie 是否有效（僅檢查 3 天以上未驗證的帳號）。失效時自動從瀏覽器重新匯入。"
+                               Foreground="#A6ADC8" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,8" />
+                    <CheckBox Content="啟用自動保活"
+                              IsChecked="{Binding AutoCookieSync}"
+                              Foreground="#CDD6F4" FontSize="13" />
+                </StackPanel>
+            </Border>
+
+            <!-- Client Settings -->
+            <Border Background="#313244" CornerRadius="8" Padding="16" Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="客戶端設定" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,8" />
+                    <Button Content="重設 ClientAppSettings" Command="{Binding ResetClientSettingsCommand}"
+                            Style="{StaticResource DangerButton}" HorizontalAlignment="Left" />
+                </StackPanel>
+            </Border>
+
+            <!-- Status -->
+            <TextBlock Text="{Binding StatusMessage}" Foreground="#A6ADC8" FontSize="12"
+                       TextWrapping="Wrap" Margin="0,8,0,0" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

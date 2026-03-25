@@ -1,0 +1,79 @@
+<Window x:Class="Mutiblox.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:pages="clr-namespace:Mutiblox.Views.Pages"
+        xmlns:vm="clr-namespace:Mutiblox.ViewModels"
+        Title="Mutiblox" Height="700" Width="1100"
+        WindowStartupLocation="CenterScreen"
+        Background="#1E1E2E">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vm:AccountListViewModel}">
+            <pages:AccountListPage />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:GameBrowserViewModel}">
+            <pages:GameBrowserPage />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:LauncherViewModel}">
+            <pages:LauncherPage />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:InstanceDashboardViewModel}">
+            <pages:InstanceDashboardPage />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+            <pages:SettingsPage />
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="180" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Navigation Sidebar -->
+        <Border Grid.Column="0" Background="#181825" BorderBrush="#313244" BorderThickness="0,0,1,0">
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Top" Text="Mutiblox"
+                           FontSize="24" FontWeight="Bold" Foreground="#CDD6F4"
+                           HorizontalAlignment="Center" Margin="0,20,0,30" />
+
+                <ListBox SelectedIndex="{Binding SelectedNavIndex}"
+                         Background="Transparent" BorderThickness="0"
+                         Foreground="#CDD6F4" FontSize="14">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Padding" Value="20,12" />
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border x:Name="Bd" Padding="{TemplateBinding Padding}"
+                                                Background="Transparent" CornerRadius="4" Margin="8,2">
+                                            <ContentPresenter />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="Bd" Property="Background" Value="#313244" />
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Bd" Property="Background" Value="#45475A" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBoxItem Content="帳號管理" />
+                    <ListBoxItem Content="遊戲瀏覽" />
+                    <ListBoxItem Content="手動啟動" />
+                    <ListBoxItem Content="實例監控" />
+                    <ListBoxItem Content="設定" />
+                </ListBox>
+            </DockPanel>
+        </Border>
+
+        <!-- Content Area -->
+        <ContentControl Grid.Column="1" Content="{Binding CurrentPage}" Margin="0" />
+    </Grid>
+</Window>

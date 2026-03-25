@@ -1,0 +1,35 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## VS Code / IDE
+.vs/
+.vscode/
+*.swp
+*~
+
+## Publish output
+publish/
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+build/
+bld/
+
+## NuGet
+*.nupkg
+**/packages/*
+
+## OS
+Thumbs.db
+.DS_Store
+
+## Claude Code
+.claude/
