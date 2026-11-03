@@ -58,6 +58,12 @@ public sealed class PerformanceService : IPerformanceService, IDisposable
             {
                 // Process exited between check and metric read
             }
+            catch (Exception)
+            {
+                // Never let a metrics failure (e.g. OutOfMemoryException under heavy load)
+                // escape the timer callback — an unhandled background exception would
+                // terminate the app, abandoning the singleton mutex and killing all instances.
+            }
         }
 
         MetricsUpdated?.Invoke();

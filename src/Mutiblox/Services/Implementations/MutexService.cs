@@ -40,6 +40,7 @@ public sealed class MutexService : IMutexService, IDisposable
         await Task.Run(() =>
         {
             LogDiagnostic("Attempting mutex acquisition...");
+            TerminateTrayProcesses();
             LogDiagnostic("Closing existing Roblox handles (if any)...");
             CloseExistingRobloxHandles();
         }, ct).ConfigureAwait(false);
@@ -174,6 +175,49 @@ public sealed class MutexService : IMutexService, IDisposable
         Disable();
         _shutdownSignal.Dispose();
         _acquisitionDone.Dispose();
+    }
+
+    /// <summary>
+    /// Terminates idle Roblox tray processes ("RobloxPlayerBeta.exe --launch-to-tray").
+    /// Since late 2026 Roblox autostarts this background process via the HKCU Run key.
+    /// It owns ROBLOX_singletonMutex/Event before we start, and its WndProcessCheck
+    /// would compete with us for the mutex. It is not a game client, so killing it is safe;
+    /// it simply restarts at the next Windows login.
+    /// </summary>
+    private static void TerminateTrayProcesses()
+    {
+        try
+        {
+            using var searcher = new System.Management.ManagementObjectSearcher(
+                "SELECT ProcessId, CommandLine FROM Win32_Process WHERE Name = 'RobloxPlayerBeta.exe'");
+
+            foreach (var obj in searcher.Get())
+            {
+                using (obj)
+                {
+                    var cmd = obj["CommandLine"] as string;
+                    if (cmd == null || !cmd.Contains("--launch-to-tray", StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    var pid = Convert.ToInt32(obj["ProcessId"]);
+                    try
+                    {
+                        using var proc = Process.GetProcessById(pid);
+                        proc.Kill();
+                        proc.WaitForExit(3000);
+                        LogDiagnostic($"Terminated Roblox tray process (PID {pid})");
+                    }
+                    catch (Exception ex)
+                    {
+                        LogDiagnostic($"Failed to terminate tray process PID {pid}: {ex.Message}");
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            LogDiagnostic($"TerminateTrayProcesses failed: {ex.Message}");
+        }
     }
 
     /// <summary>

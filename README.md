@@ -38,10 +38,19 @@ dotnet run --project src/Mutiblox
 ```
 
 ### Publish
+Run `publish.bat`, or manually:
 ```bash
-dotnet publish src/Mutiblox -c Release -r win-x64 --self-contained false -o publish
 dotnet publish src/Mutiblox.Watcher -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o publish
+dotnet publish src/Mutiblox -c Release -r win-x64 --self-contained false -o publish
 ```
+The entry point is `publish/Mutiblox.exe`. Re-publish after every code change — the `publish/` folder is not updated by `dotnet build`.
+
+## Troubleshooting
+
+- **Multi-instance fails on startup** — Recent Roblox versions autostart a background tray process (`RobloxPlayerBeta.exe --launch-to-tray`) that grabs the singleton mutex at Windows login. Mutiblox terminates it automatically before acquiring the mutex; check `%LOCALAPPDATA%\Mutiblox\mutex_debug.log` for `Terminated Roblox tray process`.
+- **Instances disconnect together** — Check `%LOCALAPPDATA%\Roblox\logs\` for `Reason: 285` / `WAIT_ABANDONED`, and `%LOCALAPPDATA%\Mutiblox\crash.log` for app crashes.
+
+See [docs/DEVLOG.md](docs/DEVLOG.md) for the development history.
 
 ## Project Structure
 
